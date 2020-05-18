@@ -2,6 +2,7 @@ package io.devist.chat.user
 
 import com.github.javafaker.Faker
 import io.devist.chat.user.exceptions.UserActivationException
+import io.devist.chat.user.exceptions.UserNotFoundException
 import org.flywaydb.test.FlywayTestExecutionListener
 import org.flywaydb.test.annotation.FlywayTest
 import org.hamcrest.MatcherAssert.assertThat
@@ -23,8 +24,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 @TestExecutionListeners(
         listeners = [FlywayTestExecutionListener::class],
-        mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-
+        mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
+)
 @FlywayTest
 class UserActivationTests {
 
@@ -46,17 +47,18 @@ class UserActivationTests {
 
         val userRetrieved = userService[user.id]
 
+        assertThat(userRetrieved.id, `is`(equalTo(user.id)))
         assertThat(userRetrieved.status, `is`(equalTo(UserStatus.ACTIVE)))
     }
 
     @Test
     fun `should fire a exception when passing a empty hash`() {
-        assertThrows<UserActivationException>("Hash is mandatory") { userService.validateHash("") }
+        assertThrows<UserActivationException> { userService.validateHash("") }
     }
 
     @Test
     fun `should throw an exception when passing an invalid or nonexistent hash`() {
-        assertThrows<UserActivationException>("Hash does not exists") { userService.validateHash(faker.random().hex()) }
+        assertThrows<UserNotFoundException> { userService.activate(faker.random().hex()) }
     }
 
     @Test
@@ -65,7 +67,7 @@ class UserActivationTests {
 
         userService.activate(user.emailVerificationHash)
 
-        assertThrows<UserActivationException>("User is inactive and cannot be actived anymore") { userService.validateHash(user().emailVerificationHash) }
+        assertThrows<UserActivationException> { userService.activate(user.emailVerificationHash) }
     }
 
     @Test
@@ -74,7 +76,7 @@ class UserActivationTests {
 
         userService.deactivate(user.id)
 
-        assertThrows<UserActivationException>("User is inactive") { userService.validateHash(user().emailVerificationHash) }
+        assertThrows<UserActivationException> { userService.activate(user.emailVerificationHash) }
     }
 
     private fun user(): UserDto = userService.create(UserDto(

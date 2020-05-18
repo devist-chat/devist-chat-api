@@ -10,8 +10,4 @@ import java.util.*
 @Repository
 interface UserRepository : JpaRepository<User, UUID> {
     fun findByEmailVerificationHash(hash: String): Optional<User>
-
-    @Modifying
-    @Query("UPDATE User u SET u.status = :status WHERE u.id = :id")
-    fun updateUserStatus(@Param("id") id: UUID, @Param("status") status: UserStatus): Int
 }

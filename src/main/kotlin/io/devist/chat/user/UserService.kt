@@ -2,15 +2,13 @@ package io.devist.chat.user
 
 import io.devist.chat.user.exceptions.UserActivationException
 import io.devist.chat.user.exceptions.UserCreateException
+import io.devist.chat.user.exceptions.UserDeactivationException
 import io.devist.chat.user.exceptions.UserNotFoundException
 import io.devist.chat.utils.messages.MessageService
 import io.devist.chat.utils.validators.Validators
 import io.devist.chat.utils.validators.isEmailValid
 import io.devist.chat.utils.validators.isFullNameValid
 import io.devist.chat.utils.validators.isValid
-import org.apache.commons.lang3.StringUtils
-import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
@@ -61,7 +59,7 @@ class UserService(
 
         return UserDto(id = saved.id,
                 name = saved.name,
-                email = saved.email!!,
+                email = saved.email,
                 status = saved.status,
                 emailVerificationHash = saved.emailVerificationHash)
     }
@@ -69,12 +67,33 @@ class UserService(
     fun activate(hash: String?) {
         validateHash(hash)
 
-        val user = this[hash]
+        hash?.let {
+            val user = repository.findByEmailVerificationHash(it).orElseThrow { UserNotFoundException(messages["exception.UserNotFoundException.byHash", it]) }
 
-        if (user.status != UserStatus.NEW) throw  UserActivationException(messages["exceptions.UserActivateException.status.invalid", user.status!!])
+            if (user.status != UserStatus.NEW) throw  UserActivationException(messages["exceptions.UserActivateException.status.invalid", user.status])
 
-        user.id?.let { repository.updateUserStatus(it, UserStatus.ACTIVE) }
+            user.status = UserStatus.ACTIVE
+
+            repository.save(user)
+        }
     }
+
+    fun deactivate(id: UUID?) {
+//        TODO("Write a test for this")
+
+        if (!validators.isValid(id)) throw UserDeactivationException(messages["exceptions.UserDeactivationException.id.empty"])
+
+        id?.let {
+            val user = this.repository.findById(it).orElseThrow { UserNotFoundException(messages["exceptions.UserNotFoundException.byId", it]) }
+
+            if (user.status != UserStatus.NEW) throw  UserDeactivationException(messages["exceptions.UserDeactivationException.status.invalid", user.status])
+
+            user.status = UserStatus.INACTIVE
+
+            repository.save(user)
+        }
+    }
+
 
     fun validateHash(hash: String?) {
         if (!validators.isValid(hash)) throw UserActivationException(messages["exceptions.UserActivateException.hash.empty"])
@@ -98,11 +117,4 @@ class UserService(
     fun validateUserPassword(user: UserDto) {
         if (!validators.isValid(user.password, 5)) throw UserCreateException(messages["exceptions.UserCreateException.password.empty"])
     }
-
-    fun deactivate(id: UUID?) {
-        TODO("Write a test for this")
-
-    }
-
-
 }

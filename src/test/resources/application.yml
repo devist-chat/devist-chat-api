@@ -27,6 +27,6 @@ spring:
     allow-bean-definition-overriding: true
   flyway:
     enabled: true
-    schemas: [devist]
+    schemas: [DEVIST]
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
