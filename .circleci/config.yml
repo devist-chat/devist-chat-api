@@ -41,7 +41,7 @@ workflows:
   api_build:
     jobs: 
       - build:
-          context: SonarCloud
+#          context: SonarCloud
           filters:
             branches:
               only:
