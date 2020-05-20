@@ -7,6 +7,7 @@ plugins {
     kotlin("jvm") version "1.3.72"
     kotlin("plugin.spring") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
+    jacoco
 }
 
 group = "io.devist"
@@ -49,6 +50,7 @@ dependencies {
     testImplementation("com.github.javafaker:javafaker:1.0.2")
 }
 
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
@@ -78,36 +80,5 @@ tasks.register("projectName") {
     doLast {
         print("project-name: ")
         println(project.name)
-    }
-}
-
-
-tasks.register("setBuildNumber") {
-
-    doLast {
-        println(this.hasProperty("buildNumber"))
-        println(this.project.properties)
-        println("Changing build number to ${buildNumber}...")
-
-        val currentVersion = project.version as String
-
-        val versionNumber = currentVersion.split("-")[0]
-        val release = currentVersion.split("-")[1]
-        val versionNumbers = versionNumber.split(".")
-
-        var version = StringBuilder("")
-
-        for (i in 0..(versionNumbers.size - 2)) {
-            version.append(versionNumbers[i])
-            version.append(".")
-        }
-
-        version.append(buildNumber)
-        version.append("-")
-        version.append(release)
-
-        project.version = version.toString()
-        print("project-version: ")
-        println(project.version)
     }
 }
