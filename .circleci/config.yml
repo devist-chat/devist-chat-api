@@ -34,14 +34,12 @@ jobs:
 #      - run: |
 #          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
       - run:
-          name: Get Docker parameters
+          name: Building Docker Image
           command: |
             version=$(gradle projectVersion | grep "project-version:" |awk '{print $2}')
             group=$(gradle projectGroup | grep "project-group:" |awk '{print $2}')
             name=$(gradle projectName | grep "project-name:" | awk '{print $2}')
-      - run:
-          name: Building Docker Image
-          command: docker build -t $group/$name:$version .
+            docker build -t $group/$name:$version .
 #      - run:
 #          name: Publish Docker Image
 #          command: docker build -t $group/$name:$version .
