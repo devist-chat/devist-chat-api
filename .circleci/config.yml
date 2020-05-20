@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: Analyze on SonarCloud
-          command: gradle verify sonar:sonar
+          command: gradle build sonarqube
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "build.gradle.kts" }}

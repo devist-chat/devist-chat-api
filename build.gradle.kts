@@ -4,6 +4,8 @@ plugins {
     id("org.springframework.boot") version "2.2.7.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
     id("java")
+    id("org.sonarqube") version "2.8"
+
     kotlin("jvm") version "1.3.72"
     kotlin("plugin.spring") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
@@ -50,6 +52,13 @@ dependencies {
     testImplementation("com.github.javafaker:javafaker:1.0.2")
 }
 
+sonarqube {
+    properties {
+        property("sonar.projectKey", "devist-chat_devist-chat-api")
+        property("sonar.organization", "devist-chat")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
+}
 
 tasks.withType<Test> {
     useJUnitPlatform()
