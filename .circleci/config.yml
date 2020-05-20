@@ -43,15 +43,15 @@ jobs:
       - run:
           name: Publish Docker Image
           command: |
-          version=$(gradle projectVersion | grep "project-version:" |awk '{print $2}')
-          group=$(gradle projectGroup | grep "project-group:" |awk '{print $2}')
-          name=$(gradle projectName | grep "project-name:" | awk '{print $2}')
-          docker push -t devistchat/$group.$name:$version .
+            version=$(gradle projectVersion | grep "project-version:" |awk '{print $2}')
+            group=$(gradle projectGroup | grep "project-group:" |awk '{print $2}')
+            name=$(gradle projectName | grep "project-name:" | awk '{print $2}')
+            docker push -t devistchat/$group.$name:$version .
 workflows:
   api_build:
     jobs: 
       - build:
-#          context: SonarCloud
+          context: SonarCloud
           filters:
             branches:
               only:
