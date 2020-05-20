@@ -13,8 +13,7 @@ fun Validators.isValid(string: String?): Boolean = (string != null && !string.tr
  * @param minSize Minimum size of the string
  * @return <b>true</b> if is a valid filled string, with the minimum size, <b>false</b> otherwise
  */
-fun Validators.isValid(string: String?, minSize: Int): Boolean =
-        if (isValid(string)) string!!.trim().length >= minSize else false
+fun Validators.isValid(string: String?, minSize: Int): Boolean = (isValid(string)) && string!!.trim().length >= minSize
 
 /**
  * @author Orlando Burli
@@ -24,11 +23,11 @@ fun Validators.isValid(string: String?, minSize: Int): Boolean =
  * @return <b>true</b> if is a valid filled string, with the minimum and maximum size, <b>false</b> otherwise
  */
 fun Validators.isValid(string: String?, minSize: Int, maxSize: Int): Boolean =
-        if (isValid(string, minSize)) string!!.trim().length <= maxSize else false
+        (isValid(string, minSize)) && string!!.trim().length <= maxSize
 
 /**
  * @author Orlando Burli
  * @param name Name of a person
  * @return <b>true</b> if is a valid name, with name and last name, <b>false</b> otherwise
  */
-fun Validators.isFullNameValid(name: String?): Boolean = if (isValid(name)) name!!.split(" ").size > 1 else false
+fun Validators.isFullNameValid(name: String?): Boolean = (isValid(name)) && name!!.split(" ").size > 1

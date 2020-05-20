@@ -20,10 +20,12 @@ class UserService(
         val messages: MessageService,
         val validators: Validators) {
 
+    val userNotFoundMessageById = "exception.UserNotFoundException.byId"
+    val userNotFoundMessageByHash = "exception.UserNotFoundException.byHash"
 
     operator fun get(id: UUID?): UserDto {
         id?.let {
-            val user = repository.findById(it).orElseThrow { UserNotFoundException(messages["exception.UserNotFoundException.byId", it]) }
+            val user = repository.findById(it).orElseThrow { UserNotFoundException(messages[userNotFoundMessageById, it]) }
             return UserDto(
                     id = user.id,
                     name = user.name,
@@ -31,12 +33,12 @@ class UserService(
                     status = user.status
             )
         }
-        throw UserNotFoundException(messages["exception.UserNotFoundException.byId", "?"])
+        throw UserNotFoundException(messages[userNotFoundMessageById, "?"])
     }
 
     operator fun get(hash: String?): UserDto {
         hash?.let {
-            val user = repository.findByEmailVerificationHash(it).orElseThrow { UserNotFoundException(messages["exception.UserNotFoundException.byHash", it]) }
+            val user = repository.findByEmailVerificationHash(it).orElseThrow { UserNotFoundException(messages[userNotFoundMessageByHash, it]) }
             return UserDto(
                     id = user.id,
                     name = user.name,
@@ -44,7 +46,7 @@ class UserService(
                     status = user.status
             )
         }
-        throw UserNotFoundException(messages["exception.UserNotFoundException.byHash", "?"])
+        throw UserNotFoundException(messages[userNotFoundMessageByHash, "?"])
     }
 
     fun create(user: UserDto): UserDto {
@@ -68,7 +70,7 @@ class UserService(
         validateHash(hash)
 
         hash?.let {
-            val user = repository.findByEmailVerificationHash(it).orElseThrow { UserNotFoundException(messages["exception.UserNotFoundException.byHash", it]) }
+            val user = repository.findByEmailVerificationHash(it).orElseThrow { UserNotFoundException(messages[userNotFoundMessageByHash, it]) }
 
             if (user.status != UserStatus.NEW) throw  UserActivationException(messages["exceptions.UserActivateException.status.invalid", user.status])
 
@@ -79,8 +81,6 @@ class UserService(
     }
 
     fun deactivate(id: UUID?) {
-//        TODO("Write a test for this")
-
         if (!validators.isValid(id)) throw UserDeactivationException(messages["exceptions.UserDeactivationException.id.empty"])
 
         id?.let {

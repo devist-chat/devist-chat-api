@@ -8,7 +8,6 @@ plugins {
     kotlin("plugin.spring") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
 }
-var buildNumber = "x"
 
 group = "io.devist"
 version = "1.0.0-SNAPSHOT"

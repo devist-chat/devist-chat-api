@@ -8,4 +8,4 @@ import org.apache.commons.validator.routines.EmailValidator
  * @param  email Email to be validated
  * @return <b>true</b> if is a valid email, <b>false</b> otherwise
  */
-fun Validators.isEmailValid(email: String?): Boolean = if (isValid(email)) EmailValidator.getInstance().isValid(email) else false
+fun Validators.isEmailValid(email: String?): Boolean = (isValid(email) && EmailValidator.getInstance().isValid(email))
