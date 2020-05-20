@@ -8,9 +8,9 @@ jobs:
       MAVEN_OPTS: -Xmx3200m
     steps:
       - checkout
-#      - run:
-#          name: Analyze on SonarCloud
-#          command: gradle verify sonar:sonar -Dbuild=$CIRCLE_BUILD_NUM
+      - run:
+          name: Analyze on SonarCloud
+          command: gradle verify sonar:sonar
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "build.gradle.kts" }}
@@ -31,18 +31,22 @@ jobs:
       - store_artifacts:
           path: build/libs
       - setup_remote_docker
-#      - run: |
-#          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+      - run: |
+          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
       - run:
           name: Building Docker Image
           command: |
             version=$(gradle projectVersion | grep "project-version:" |awk '{print $2}')
             group=$(gradle projectGroup | grep "project-group:" |awk '{print $2}')
             name=$(gradle projectName | grep "project-name:" | awk '{print $2}')
-            docker build -t $group/$name:$version .
-#      - run:
-#          name: Publish Docker Image
-#          command: docker build -t $group/$name:$version .
+            docker build -t devistchat/$group.$name:$version .
+      - run:
+          name: Publish Docker Image
+          command: |
+          version=$(gradle projectVersion | grep "project-version:" |awk '{print $2}')
+          group=$(gradle projectGroup | grep "project-group:" |awk '{print $2}')
+          name=$(gradle projectName | grep "project-name:" | awk '{print $2}')
+          docker push -t devistchat/$group.$name:$version .
 workflows:
   api_build:
     jobs: 
