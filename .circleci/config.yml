@@ -13,13 +13,13 @@ jobs:
 #          command: gradle verify sonar:sonar -Dbuild=$CIRCLE_BUILD_NUM
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "build.gradle" }}
+          - v1-dependencies-{{ checksum "build.gradle.kts" }}
           - v1-dependencies-
       - run: gradle build -Dbuild=$CIRCLE_BUILD_NUM
       - save_cache:
           paths:
             - ~/.gradle
-          key: v1-dependencies-{{ checksum "build.gradle" }}
+          key: v1-dependencies-{{ checksum "build.gradle.kts" }}
       - run: 
           name: Run JUnit Tests
           command: gradle test -Dbuild=$CIRCLE_BUILD_NUM
