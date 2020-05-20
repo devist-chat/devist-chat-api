@@ -1,1 +1,1 @@
-rootProject.name = "chat"
+rootProject.name = "devist-chat-api"

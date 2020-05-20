@@ -8,6 +8,7 @@ plugins {
     kotlin("plugin.spring") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
 }
+var buildNumber = "x"
 
 group = "io.devist"
 version = "1.0.0-SNAPSHOT"
@@ -57,5 +58,57 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "1.8"
+    }
+}
+
+tasks.register("projectVersion") {
+    doLast {
+        print("project-version: ")
+        println(project.version)
+    }
+}
+
+tasks.register("projectGroup") {
+    doLast {
+        print("project-group: ")
+        println(project.group)
+    }
+}
+
+tasks.register("projectName") {
+    doLast {
+        print("project-name: ")
+        println(project.name)
+    }
+}
+
+
+tasks.register("setBuildNumber") {
+
+    doLast {
+        println(this.hasProperty("buildNumber"))
+        println(this.project.properties)
+        println("Changing build number to ${buildNumber}...")
+
+        val currentVersion = project.version as String
+
+        val versionNumber = currentVersion.split("-")[0]
+        val release = currentVersion.split("-")[1]
+        val versionNumbers = versionNumber.split(".")
+
+        var version = StringBuilder("")
+
+        for (i in 0..(versionNumbers.size - 2)) {
+            version.append(versionNumbers[i])
+            version.append(".")
+        }
+
+        version.append(buildNumber)
+        version.append("-")
+        version.append(release)
+
+        project.version = version.toString()
+        print("project-version: ")
+        println(project.version)
     }
 }

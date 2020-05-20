@@ -33,12 +33,18 @@ jobs:
       - setup_remote_docker
 #      - run: |
 #          echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-      - run: 
+      - run:
+          name: Get Docker parameters
+          command: |
+            version=$(gradle projectVersion | grep "project-version:" |awk '{print $2}')
+            group=$(gradle projectGroup | grep "project-group:" |awk '{print $2}')
+            name=$(gradle projectName | grep "project-name:" | awk '{print $2}')
+      - run:
           name: Building Docker Image
-          command: docker build -t devist/devist-chat-api:$CIRCLE_BUILD_NUM .
+          command: docker build -t $group/$name:$version .
 #      - run:
 #          name: Publish Docker Image
-#          command: docker push devist/devist-chat-api:$CIRCLE_BUILD_NUM
+#          command: docker build -t $group/$name:$version .
 workflows:
   api_build:
     jobs: 
