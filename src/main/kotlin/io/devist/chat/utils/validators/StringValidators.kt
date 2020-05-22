@@ -31,3 +31,10 @@ fun Validators.isValid(string: String?, minSize: Int, maxSize: Int): Boolean =
  * @return <b>true</b> if is a valid name, with name and last name, <b>false</b> otherwise
  */
 fun Validators.isFullNameValid(name: String?): Boolean = (isValid(name)) && name!!.split(" ").size > 1
+
+/**
+ * @author Orlando Burli
+ * @param word Word to be validated
+ * @return <b>true</b> if is a single word, <b>false</b> otherwise
+ */
+fun Validators.isSingleWord(word: String?): Boolean = isValid(word) && word!!.split(" ").size == 1

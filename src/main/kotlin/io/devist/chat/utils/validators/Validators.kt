@@ -7,6 +7,4 @@ import org.springframework.stereotype.Service
  * Class for data validation, extended on another classes
  */
 @Service
-class Validators {
-
-}
+class Validators
